@@ -118,4 +118,5 @@ dependencies {
     }
 
     implementation'com.github.wendkierp:JTransforms:3.1'
+    androidTestImplementation 'org.mockito:mockito-android:3.+'
 }

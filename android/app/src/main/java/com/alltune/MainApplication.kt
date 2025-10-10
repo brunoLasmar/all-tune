@@ -9,6 +9,9 @@ import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
+import com.alltune.audio.AudioEmitterPackage // pacote de áudio de referência
+import com.alltune.persistence.PersistencePackage // pacote de persistência
+
 
 class MainApplication : Application(), ReactApplication {
 
@@ -17,7 +20,8 @@ class MainApplication : Application(), ReactApplication {
         override fun getPackages(): List<ReactPackage> =
             PackageList(this).packages.apply {
               // Packages that cannot be autolinked yet can be added manually here, for example:
-              // add(MyReactNativePackage())
+                add(AudioEmitterPackage())
+                add(PersistencePackage())
             }
 
         override fun getJSMainModuleName(): String = "index"
@@ -26,6 +30,7 @@ class MainApplication : Application(), ReactApplication {
 
         override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
         override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
+
       }
 
   override val reactHost: ReactHost

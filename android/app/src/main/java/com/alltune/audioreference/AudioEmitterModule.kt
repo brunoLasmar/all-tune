@@ -9,28 +9,32 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import kotlin.concurrent.thread
 
+//"ponte" entre o código Nativo (Kotlin) e o JavaScript (React Native)
 class AudioEmitterModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
     private val SAMPLE_RATE = 44100
 
+    //nome que o JavaScript usará para chamar este módulo
     override fun getName() = "AudioEmitter"
 
+    //método que pode ser chamado pela nterface (parâmetros: frequencia e duração)
     @ReactMethod
     fun playSound(frequency: Double, durationInMillis: Int, promise: Promise) {
-        // executa tudo em uma thread separada para não travar a interface do app
+        // executa tudo em uma thread separada para não travar o app
         thread {
             try {
+                //calcula quantos samples de áudio são necessários para a duração desejada
                 val numSamples = durationInMillis * SAMPLE_RATE / 1000
                 val buffer = ShortArray(numSamples)
 
-                // calcula cada ponto da onda sonora para a frequência (frequency) desejada e o converte para um formato de áudio digital
+                // calcula cada ponto da onda sonora para a frequência pedida e o converte para um formato de áudio digital
                 for (i in 0 until numSamples) {
                     val angle = 2.0 * Math.PI * i / (SAMPLE_RATE / frequency)
                     val sample = (Math.sin(angle) * 32767).toInt().toShort()
                     buffer[i] = sample
                 }
 
-                // configura o player de áudio nativo (AudioTrack)
+                // configura o player de áudio nativo para tocar áudio com todas as configurações
                 val audioTrack = AudioTrack.Builder()
                     .setAudioAttributes(
                         AudioAttributes.Builder()

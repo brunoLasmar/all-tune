@@ -1,4 +1,4 @@
-package com.alltune
+package com.afinador
 
 import android.app.Application
 import com.facebook.react.PackageList
@@ -10,29 +10,42 @@ import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 
+// 1. Seus pacotes (Caixas de Ferramenta)
+import com.afinador.audioreference.AudioEmitterPackage
+import com.afinador.persistence.PersistencePackage
+import com.afinador.audiocapture.AudioCapturePackage
+
+
 class MainApplication : Application(), ReactApplication {
 
-  override val reactNativeHost: ReactNativeHost =
-      object : DefaultReactNativeHost(this) {
-        override fun getPackages(): List<ReactPackage> =
-            PackageList(this).packages.apply {
-              // Packages that cannot be autolinked yet can be added manually here, for example:
-              // add(MyReactNativePackage())
-            }
+    // 2. Adiciona o @Suppress para limpar os avisos de obsoleto
+    @Suppress("deprecation")
+    override val reactNativeHost: ReactNativeHost =
+        object : DefaultReactNativeHost(this) {
+            override fun getPackages(): List<ReactPackage> =
+                PackageList(this).packages.apply {
+                    // Packages that cannot be autolinked yet can be added manually here
 
-        override fun getJSMainModuleName(): String = "index"
+                    // 3. ADICIONA TODOS OS 3 PACOTES
+                    add(AudioEmitterPackage())
+                    add(PersistencePackage())
+                    add(AudioCapturePackage()) // <-- ESTA LINHA FALTAVA
+                }
 
-        override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
+            override fun getJSMainModuleName(): String = "index"
 
-        override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
-        override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
-      }
+            override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
 
-  override val reactHost: ReactHost
-    get() = getDefaultReactHost(applicationContext, reactNativeHost)
+            override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
+            override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
 
-  override fun onCreate() {
-    super.onCreate()
-    loadReactNative(this)
-  }
+        }
+
+    override val reactHost: ReactHost
+        get() = getDefaultReactHost(applicationContext, reactNativeHost)
+
+    override fun onCreate() {
+        super.onCreate()
+        loadReactNative(this)
+    }
 }
